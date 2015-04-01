@@ -157,13 +157,13 @@ unicode     \\u[0-9A-Fa-f]{4}
 
 <xNONQUOTED,xQUOTED>{unicode}+	{ parseUnicode(yytext, yyleng); }
 
-<xNONQUOTED,xQUOTED>\\u 		{ yyerror(NULL, "Unicode sequence is invalid"); }
+<xNONQUOTED,xQUOTED>\\u 		{ jsquery_yyerror(NULL, "Unicode sequence is invalid"); }
 
-<xNONQUOTED,xQUOTED>\\. 		{ yyerror(NULL, "Escape sequence is invalid"); }
+<xNONQUOTED,xQUOTED>\\. 		{ jsquery_yyerror(NULL, "Escape sequence is invalid"); }
 
-<xNONQUOTED,xQUOTED>\\ 			{ yyerror(NULL, "Unexpected end after backslesh"); }
+<xNONQUOTED,xQUOTED>\\ 			{ jsquery_yyerror(NULL, "Unexpected end after backslesh"); }
 
-<xQUOTED><<EOF>>				{ yyerror(NULL, "Unexpected end of quoted string"); }
+<xQUOTED><<EOF>>				{ jsquery_yyerror(NULL, "Unexpected end of quoted string"); }
 
 <xQUOTED>\"						{
 									yylval->str = scanstring;
@@ -186,12 +186,12 @@ unicode     \\u[0-9A-Fa-f]{4}
 
 <xCOMMENT>\*					{ addchar(false, '*'); }
 
-<xCOMMENT><<EOF>>				{ yyerror(NULL, "Unexpected end of comment"); }
+<xCOMMENT><<EOF>>				{ jsquery_yyerror(NULL, "Unexpected end of comment"); }
 
 %%
 
 void
-yyerror(JsQueryParseItem **result, const char *message)
+jsquery_yyerror(JsQueryParseItem **result, const char *message)
 {
 	if (*yytext == YY_END_OF_BUFFER_CHAR)
 	{

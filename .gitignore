@@ -6,3 +6,6 @@ jsquery_gram.h
 regression.diffs
 regression.out
 results
+jsquery_pg9.4-Release-x64/
+Debug/
+x64/
