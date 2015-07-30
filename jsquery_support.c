@@ -244,3 +244,4 @@ jsqIterateArray(JsQueryItem *v, JsQueryItem *e)
 		return false;
 	}
 }
+
