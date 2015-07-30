@@ -5,7 +5,7 @@
     <DistDir>jsquery_pg$(PGMAJORVERSION)-$(Configuration)-$(Platform)</DistDir>
   </PropertyGroup>
   <ItemGroup>
-    <DocFiles Include="README.md;LICENSE"/>
+    <DocFiles Include="README.md"/>
     <ExtensionSourceFiles Include="jsquery--1.0.sql;jsquery.control"/>
     <ExtensionDll Include="$(TargetDir)\jsquery.dll"/>
   </ItemGroup>

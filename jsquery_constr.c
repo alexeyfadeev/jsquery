@@ -184,8 +184,7 @@ joinJsQuery(JsQueryItemType type, JsQuery *jq1, JsQuery *jq2)
 	return out;
 }
 
-PG_FUNCTION_INFO_V1(jsquery_join_and);
-Datum
+PGDLLEXPORT Datum
 jsquery_join_and(PG_FUNCTION_ARGS)
 {
 	JsQuery 		*jq1 = PG_GETARG_JSQUERY(0);
@@ -199,9 +198,9 @@ jsquery_join_and(PG_FUNCTION_ARGS)
 
 	PG_RETURN_JSQUERY(out);
 }
+PG_FUNCTION_INFO_V1(jsquery_join_and);
 
-PG_FUNCTION_INFO_V1(jsquery_join_or);
-Datum
+PGDLLEXPORT Datum
 jsquery_join_or(PG_FUNCTION_ARGS)
 {
 	JsQuery 		*jq1 = PG_GETARG_JSQUERY(0);
@@ -215,9 +214,9 @@ jsquery_join_or(PG_FUNCTION_ARGS)
 
 	PG_RETURN_JSQUERY(out);
 }
+PG_FUNCTION_INFO_V1(jsquery_join_or);
 
-PG_FUNCTION_INFO_V1(jsquery_not);
-Datum
+PGDLLEXPORT Datum
 jsquery_not(PG_FUNCTION_ARGS)
 {
 	JsQuery			*jq = PG_GETARG_JSQUERY(0);
@@ -253,4 +252,4 @@ jsquery_not(PG_FUNCTION_ARGS)
 
 	PG_RETURN_JSQUERY(out);
 }
-
+PG_FUNCTION_INFO_V1(jsquery_not);
