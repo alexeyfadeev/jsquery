@@ -376,13 +376,13 @@ select  'not < 1'::jsquery;
 select  'not not < 1'::jsquery;
      jsquery     
 -----------------
- NOT ("not" < 1)
+ (NOT "not" < 1)
 (1 row)
 
 select  'not( not < 1)'::jsquery;
      jsquery     
 -----------------
- NOT ("not" < 1)
+ (NOT "not" < 1)
 (1 row)
 
 select  'not.x < 1'::jsquery;
@@ -395,6 +395,12 @@ select  'x.not < 1'::jsquery;
     jsquery    
 ---------------
  "x"."not" < 1
+(1 row)
+
+select  'a.%(not x > 0 and not (y < 0 or z = 0))'::jsquery;
+                       jsquery                       
+-----------------------------------------------------
+ "a".%((NOT "x" > 0) AND (NOT ("y" < 0 OR "z" = 0)))
 (1 row)
 
 select  'is < 1'::jsquery;
@@ -412,13 +418,13 @@ select  'in < 1'::jsquery;
 select  'not is < 1'::jsquery;
     jsquery     
 ----------------
- NOT ("is" < 1)
+ (NOT "is" < 1)
 (1 row)
 
 select  'not in < 1'::jsquery;
     jsquery     
 ----------------
- NOT ("in" < 1)
+ (NOT "in" < 1)
 (1 row)
 
 select 'in in (1,2)'::jsquery;
@@ -509,6 +515,18 @@ select  'is.not  < 1'::jsquery;
     jsquery     
 ----------------
  "is"."not" < 1
+(1 row)
+
+select 'a.b.#4 > 4'::jsquery;
+    jsquery     
+----------------
+ "a"."b".#4 > 4
+(1 row)
+
+select 'a.b.#10203.* > 4'::jsquery;
+       jsquery        
+----------------------
+ "a"."b".#10203.* > 4
 (1 row)
 
 select '{"a": {"b": null}}'::jsonb @@ 'a.b = 1';
@@ -844,7 +862,13 @@ select 'asd.# = 3'::jsquery & 'zzz = true' | 'xxx.# = zero';
 select !'asd.# = 3'::jsquery & 'zzz = true' | !'xxx.# = zero';
                              ?column?                             
 ------------------------------------------------------------------
- ((NOT ("asd".# = 3) AND "zzz" = true) OR NOT ("xxx".# = "zero"))
+ (((NOT "asd".# = 3) AND "zzz" = true) OR (NOT "xxx".# = "zero"))
+(1 row)
+
+select !'asd.#3.f = 3'::jsquery & 'zzz = true' | !'xxx.# = zero';
+                               ?column?                                
+-----------------------------------------------------------------------
+ (((NOT "asd".#3."f" = 3) AND "zzz" = true) OR (NOT "xxx".# = "zero"))
 (1 row)
 
 select '{"x":[0,1,1,2]}'::jsonb @@ 'x @> [1,0]'::jsquery;
@@ -989,6 +1013,42 @@ select '{"a": {"b": 3, "c": "hey"}, "x": [5,6]}'::jsonb @@ '%=[5,6]';
  ?column? 
 ----------
  t
+(1 row)
+
+select '{"a": {"b": [1,2,3]}}'::jsonb @@ 'a.b.#1 = 2';
+ ?column? 
+----------
+ t
+(1 row)
+
+select '{"a": {"b": [1,2,3]}}'::jsonb @@ 'a.b.#2 = 2';
+ ?column? 
+----------
+ f
+(1 row)
+
+select '{"a": {"b": [1,2,3]}}'::jsonb @@ 'a.b.#3 = 2';
+ ?column? 
+----------
+ f
+(1 row)
+
+select '{"a": {"b": [{"x":1},{"x":2},{"x":3}]}}'::jsonb @@ 'a.b.#1.x = 2';
+ ?column? 
+----------
+ t
+(1 row)
+
+select '{"a": {"b": [{"x":1},{"x":2},{"x":3}]}}'::jsonb @@ 'a.b.#2.x = 2';
+ ?column? 
+----------
+ f
+(1 row)
+
+select '{"a": {"b": [{"x":1},{"x":2},{"x":3}]}}'::jsonb @@ 'a.b.#3.x = 2';
+ ?column? 
+----------
+ f
 (1 row)
 
 select '"XXX"'::jsonb @@ '$="XXX"';

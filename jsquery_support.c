@@ -1,13 +1,13 @@
 /*-------------------------------------------------------------------------
  *
  * jsquery_support.c
- *     Functions and operations to support jsquery  
+ *	Functions and operations to support jsquery
  *
  * Copyright (c) 2014, PostgreSQL Global Development Group
  * Author: Teodor Sigaev <teodor@sigaev.ru>
  *
  * IDENTIFICATION
- *    contrib/jsquery/jsquery_support.c
+ *	contrib/jsquery/jsquery_support.c
  *
  *-------------------------------------------------------------------------
  */
@@ -22,7 +22,7 @@
 } while(0)							\
 
 #define read_int32(v, b, p) do {	\
-	(v) = *(uint32*)((b) + (p));		\
+	(v) = *(uint32*)((b) + (p));	\
 	(p) += sizeof(int32);			\
 } while(0)							\
 
@@ -79,6 +79,9 @@ jsqInitByBuffer(JsQueryItem *v, char *base, int32 pos)
 		case jqiAll:
 		case jqiAllArray:
 		case jqiAllKey:
+			break;
+		case jqiIndexArray:
+			read_int32(v->arrayIndex, base, pos);
 			break;
 		case jqiKey:
 		case jqiString:
@@ -144,6 +147,7 @@ jsqGetNext(JsQueryItem *v, JsQueryItem *a)
 		Assert(
 			v->type == jqiKey ||
 			v->type == jqiAny ||
+			v->type == jqiIndexArray ||
 			v->type == jqiAnyArray ||
 			v->type == jqiAnyKey ||
 			v->type == jqiAll ||

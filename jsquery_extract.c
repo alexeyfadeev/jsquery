@@ -1,13 +1,13 @@
 /*-------------------------------------------------------------------------
  *
  * jsquery_extract.c
- *     Functions and operations to support jsquery in indexes  
+ *	Functions and operations to support jsquery in indexes
  *
  * Copyright (c) 2014, PostgreSQL Global Development Group
  * Author: Alexander Korotkov <aekorotkov@gmail.com>
  *
  * IDENTIFICATION
- *    contrib/jsquery/jsquery_extract.c
+ *	contrib/jsquery/jsquery_extract.c
  *
  *-------------------------------------------------------------------------
  */
@@ -43,10 +43,10 @@ static void debugRecursive(StringInfo buf, ExtractedNode *node, int shift);
 static ExtractedNode *
 recursiveExtract(JsQueryItem *jsq, bool not, bool indirect, PathItem *path)
 {
-	ExtractedNode 	*leftNode, *rightNode, *result;
-	PathItem		*pathItem;
-	ExtractedNodeType type;
-	JsQueryItem	elem, e;
+	ExtractedNode		*leftNode, *rightNode, *result;
+	PathItem			*pathItem;
+	ExtractedNodeType	type;
+	JsQueryItem			elem, e;
 
 	check_stack_depth();
 
@@ -102,6 +102,13 @@ recursiveExtract(JsQueryItem *jsq, bool not, bool indirect, PathItem *path)
 				return NULL;
 			pathItem = (PathItem *)palloc(sizeof(PathItem));
 			pathItem->type = iAny;
+			pathItem->parent = path;
+			jsqGetNext(jsq, &elem);
+			return recursiveExtract(&elem, not, true, pathItem);
+		case jqiIndexArray:
+			pathItem = (PathItem *)palloc(sizeof(PathItem));
+			pathItem->type = iIndexArray;
+			pathItem->arrayIndex = jsq->arrayIndex;
 			pathItem->parent = path;
 			jsqGetNext(jsq, &elem);
 			return recursiveExtract(&elem, not, true, pathItem);
@@ -453,16 +460,16 @@ compareJsQueryItem(JsQueryItem *v1, JsQueryItem *v2)
 static void
 processGroup(ExtractedNode *node, int start, int end)
 {
-	int 				i;
+	int					i;
 	JsQueryItem		   *leftBound = NULL,
 					   *rightBound = NULL,
 					   *exactValue = NULL;
-	bool 				leftInclusive = false,
+	bool				leftInclusive = false,
 						rightInclusive = false,
 						first = true;
 	ExtractedNode	   *child;
 	ExtractedNodeType	type = eAny;
-	JsQueryItemType		isType = jbvNull;
+	JsQueryItemType		isType = jqiNull;
 
 	if (end - start < 2)
 		return;
@@ -575,8 +582,8 @@ simplifyRecursive(ExtractedNode *node)
 {
 	if (node->type == eAnd)
 	{
-		int 			i, groupStart = -1;
-		ExtractedNode 	*child, *prevChild = NULL;
+		int				i, groupStart = -1;
+		ExtractedNode	*child, *prevChild = NULL;
 
 		for (i = 0; i < node->args.count; i++)
 			node->args.items[i]->number = i;
@@ -764,7 +771,7 @@ ExtractedNode *
 extractJsQuery(JsQuery *jq, MakeEntryHandler makeHandler,
 								CheckEntryHandler checkHandler, Pointer extra)
 {
-	ExtractedNode 	*root;
+	ExtractedNode	*root;
 	JsQueryItem		jsq;
 
 	jsqInit(&jsq, jq);
@@ -862,6 +869,9 @@ debugPath(StringInfo buf, PathItem *path)
 			break;
 		case jqiAnyArray:
 			appendStringInfoChar(buf, '#');
+			break;
+		case jqiIndexArray:
+			appendStringInfo(buf, "#%d", path->arrayIndex);
 			break;
 		case jqiKey:
 			appendBinaryStringInfo(buf, path->s, path->len);

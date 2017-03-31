@@ -28,9 +28,9 @@ Availability
 
 JsQuery is realized as an extension and not available in default PostgreSQL
 installation. It is available from
-[github](https://github.com/akorotkov/jsquery)
+[github](https://github.com/postgrespro/jsquery)
 under the same license as
-[PostgreSQL](http://www.postgresql.org/about/licence/)
+[PostgreSQL](https://www.postgresql.org/about/licence/)
 and supports PostgreSQL 9.4+.
 
 Regards
@@ -49,11 +49,11 @@ Before build and install you should ensure following:
    PostgreSQL from source.
  * You have flex and bison installed on your system. JsQuery was tested on
    flex 2.5.37-2.5.39, bison 2.7.12.
- * Your PATH variable is configured so that pg\_config command available.
+ * Your PATH variable is configured so that pg\_config command available, or set PG_CONFIG variable.
     
 Typical installation procedure may look like this:
     
-    $ git clone https://github.com/akorotkov/jsquery.git
+    $ git clone https://github.com/postgrespro/jsquery.git
     $ cd jsquery
     $ make USE_PGXS=1
     $ sudo make USE_PGXS=1 install
@@ -89,6 +89,7 @@ the simplest case path is just an key name. In general path is key names and
 placeholders combined by dot signs. Path can use following placeholders:
 
  * `#` – any index of array;
+ * `#N` – N-th index of array;
  * `%` – any key of object;
  * `*` – any sequence of array indexes and object keys;
  * `@#` – length of array or object, could be only used as last component of
@@ -128,7 +129,7 @@ Prefix expressions are expressions given in the form path (subexpression).
 In this case path selects JSON values to be checked using given subexpression.
 Check results are aggregated in the same way as in simple expressions.
 
- * `#(a = 1 AND b = 2)` – exists element of array which a key is 1 and b key is 1
+ * `#(a = 1 AND b = 2)` – exists element of array which a key is 1 and b key is 2
  * `%($ >= 10 AND $ <= 20)` – exists object key which values is between 10 and 20
 
 Path also could contain following special placeholders with "every" semantics:
@@ -345,7 +346,7 @@ Contribution
 
 Please, notice, that JsQuery is still under development and while it's
 stable and tested, it may contains some bugs. Don't hesitate to raise
-[issues at github](https://github.com/akorotkov/jsquery/issues) with your
+[issues at github](https://github.com/postgrespro/jsquery/issues) with your
 bug reports.
 
 If you're lacking of some functionality in JsQuery and feeling power to
