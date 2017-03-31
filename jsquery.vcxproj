@@ -169,7 +169,6 @@
   <ItemGroup>
     <None Include="jsquery--1.0.sql" />
     <None Include="jsquery.control" />
-    <None Include="jsquery.control" />
     <None Include="jsquery.props">
       <SubType>Designer</SubType>
     </None>
